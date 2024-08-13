@@ -1,0 +1,109 @@
+<script type="text/javascript">
+    RED.nodes.registerType('supabase-db', {
+        category: 'Rizlum',
+        color: '#a6bbcf',
+        defaults: {
+            name: { value: "" },
+            config: { value: "", type: "supabase-config" },
+            table: { value: "" },
+            action: { value: "read" },
+            query: { value: "topic" },
+            queryType: { value: "msg" },
+            body: { value: "payload" },
+            bodyType: { value: "msg" },
+            customHeaders: { value: "{}" },
+            customHeadersType: { value: "json" },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "file.svg",
+        label: function () {
+            return this.name || `${this.table}.${this.action}`;
+        },
+        oneditprepare: function () {
+            $("#node-input-action").typedInput({
+                types: [
+                    {
+                        value: "action",
+                        options: [
+                            { value: "create", label: "Create" },
+                            { value: "read", label: "Read" },
+                            { value: "update", label: "Update" },
+                            { value: "delete", label: "Delete" },
+                        ]
+                    }
+                ]
+            });
+            $("#node-input-action").on("change", function (event, type, value) {
+                switch (value) {
+                    case "create":
+                        $('#node-input-query').parent().hide();
+                        $('#node-input-body').parent().show();
+                        break;
+                    case "read":
+                        $('#node-input-query').parent().show();
+                        $('#node-input-body').parent().hide();
+                        break;
+                    case "update":
+                        $('#node-input-query').parent().show();
+                        $('#node-input-body').parent().show();
+                        break;
+                    case "delete":
+                        $('#node-input-query').parent().show();
+                        $('#node-input-body').parent().hide();
+                        break;
+                }
+            });
+            $("#node-input-query").typedInput({
+                types: ["str", "msg", "jsonata"],
+                typeField: $("#node-input-queryType")
+            });
+            $("#node-input-body").typedInput({
+                types: ["msg", "json", "jsonata"],
+                typeField: $("#node-input-bodyType")
+            });
+            $("#node-input-customHeaders").typedInput({
+                types: ["msg", "json", "jsonata"],
+                typeField: $("#node-input-customHeadersType")
+            });
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="supabase-db">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-config"><i class="fa fa-cog"></i> Config</label>
+        <input type="text" id="node-input-config" placeholder="Config">
+    </div>
+    <div class="form-row">
+        <label for="node-input-table"><i class="fa fa-table"></i> Table</label>
+        <input type="text" id="node-input-table" placeholder="table">
+    </div>
+    <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-chain"></i> Action</label>
+        <input type="text" id="node-input-action" placeholder="action">
+    </div>
+    <div class="form-row">
+        <label for="node-input-query"><i class="fa fa-chain"></i> Query</label>
+        <input type="text" id="node-input-query" placeholder="query">
+        <input type="hidden" id="node-input-queryType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-body"><i class="fa fa-chain"></i> Body</label>
+        <input type="text" id="node-input-body" placeholder="body">
+        <input type="hidden" id="node-input-bodyType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-customHeaders"><i class="fa fa-chain"></i> Custom Headers</label>
+        <input type="text" id="node-input-customHeaders" placeholder="customHeaders">
+        <input type="hidden" id="node-input-customHeadersType">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="supabase-db">
+    <p>A simple node that converts the message payloads into all supabase-db characters</p>
+</script>
