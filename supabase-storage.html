@@ -1,0 +1,120 @@
+<script type="text/javascript">
+    RED.nodes.registerType('supabase-storage', {
+        category: 'Rizlum',
+        color: '#a6bbcf',
+        defaults: {
+            name: { value: "" },
+            config: { value: "", type: "supabase-config" },
+            table: { value: "" },
+            action: { value: "upload" },
+            bucket: { value: "avatar" },
+            bucketType: { value: "msg" },
+            path: { value: "topic" },
+            pathType: { value: "msg" },
+            content: { value: "payload" },
+            contentType: { value: "msg" },
+            fileOptions: { value: "{}" },
+            fileOptionsType: { value: "json" },
+            customOptions: { value: "{}" },
+            customOptionsType: { value: "json" },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "file.svg",
+        label: function () {
+            return this.name || `${this.bucket}.${this.action}`;
+        },
+        oneditprepare: function () {
+            $("#node-input-action").typedInput({
+                types: [
+                    {
+                        value: "action",
+                        options: [
+                            { value: "upload", label: "Upload" },
+                            { value: "download", label: "Download" },
+                            { value: "remove", label: "Remove" },
+                        ]
+                    }
+                ]
+            });
+            $("#node-input-action").on("change", function (event, type, value) {
+                switch (value) {
+                    case "upload":
+                        $('#node-input-path').parent().show();
+                        $('#node-input-content').parent().show();
+                        $('#node-input-fileOptions').parent().show();
+                        break;
+                    case "download":
+                        $('#node-input-path').parent().show();
+                        $('#node-input-content').parent().hide();
+                        $('#node-input-fileOptions').parent().show();
+                        break;
+                    case "remove":
+                        $('#node-input-path').parent().show();
+                        $('#node-input-content').parent().hide();
+                        $('#node-input-fileOptions').parent().hide();
+                        break;
+                }
+            });
+            $("#node-input-path").typedInput({
+                types: ["str", "msg", "jsonata"],
+                typeField: $("#node-input-pathType")
+            });
+            $("#node-input-content").typedInput({
+                types: ["msg", "json", "jsonata"],
+                typeField: $("#node-input-contentType")
+            });
+            $("#node-input-fileOptions").typedInput({
+                types: ["msg", "json", "jsonata"],
+                typeField: $("#node-input-fileOptionsType")
+            });
+            $("#node-input-customOptions").typedInput({
+                types: ["msg", "json", "jsonata"],
+                typeField: $("#node-input-customOptionsType")
+            });
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="supabase-storage">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-config"><i class="fa fa-cog"></i> Config</label>
+        <input type="text" id="node-input-config" placeholder="Config">
+    </div>
+    <div class="form-row">
+        <label for="node-input-bucket"><i class="fa fa-bucket"></i> Bucket</label>
+        <input type="text" id="node-input-bucket" placeholder="Bucket">
+    </div>
+    <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-chain"></i> Action</label>
+        <input type="text" id="node-input-action" placeholder="Action">
+    </div>
+    <div class="form-row">
+        <label for="node-input-path"><i class="fa fa-chain"></i> Path</label>
+        <input type="text" id="node-input-path" placeholder="Path">
+        <input type="hidden" id="node-input-pathType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-content"><i class="fa fa-chain"></i> Content</label>
+        <input type="text" id="node-input-content" placeholder="Content">
+        <input type="hidden" id="node-input-contentType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-fileOptions"><i class="fa fa-chain"></i> File Options</label>
+        <input type="text" id="node-input-fileOptions" placeholder="File Options">
+        <input type="hidden" id="node-input-fileOptionsType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-customOptions"><i class="fa fa-chain"></i> Custom Options</label>
+        <input type="text" id="node-input-customOptions" placeholder="Custom Options">
+        <input type="hidden" id="node-input-customOptionsType">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="supabase-storage">
+    <p>A simple node that converts the message payloads into all supabase-storage characters</p>
+</script>
